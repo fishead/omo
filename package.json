@@ -1,6 +1,6 @@
 {
   "name": "omo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Oh my OSS command-line tool",
   "main": "lib/index.js",
   "module": "src/index.js",
