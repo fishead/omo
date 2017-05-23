@@ -40,6 +40,14 @@ ali-oss@^4.4.4:
     utility "^1.8.0"
     xml2js "^0.4.16"
 
+ansi-regex@^2.0.0:
+  version "2.1.1"
+  resolved "https://registry.npmjs.org/ansi-regex/-/ansi-regex-2.1.1.tgz#c3b33ab5ee360d86e0e628f0468ae7ef27d654df"
+
+ansi-styles@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.npmjs.org/ansi-styles/-/ansi-styles-2.2.1.tgz#b432dd3358b634cf75e1e4664368240533c1ddbe"
+
 any-promise@^1.3.0:
   version "1.3.0"
   resolved "http://nexus.jcbel.com/repository/npm/any-promise/-/any-promise-1.3.0.tgz#abc6afeedcea52e809cdc0376aed3ce39635d17f"
@@ -80,6 +88,16 @@ braces@^1.8.2:
     expand-range "^1.8.1"
     preserve "^0.2.0"
     repeat-element "^1.1.2"
+
+chalk@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.npmjs.org/chalk/-/chalk-1.1.3.tgz#a8115c55e4a702fe4d150abd3872822a7e09fc98"
+  dependencies:
+    ansi-styles "^2.2.1"
+    escape-string-regexp "^1.0.2"
+    has-ansi "^2.0.0"
+    strip-ansi "^3.0.0"
+    supports-color "^2.0.0"
 
 co-defer@^1.0.0:
   version "1.0.0"
@@ -159,6 +177,10 @@ escape-html@~1.0.3:
   version "1.0.3"
   resolved "http://nexus.jcbel.com/repository/npm/escape-html/-/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
 
+escape-string-regexp@^1.0.2:
+  version "1.0.5"
+  resolved "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
+
 estree-walker@^0.2.1:
   version "0.2.1"
   resolved "http://nexus.jcbel.com/repository/npm/estree-walker/-/estree-walker-0.2.1.tgz#bdafe8095383d8414d5dc2ecf4c9173b6db9412e"
@@ -234,6 +256,12 @@ graceful-fs@^4.1.9:
   version "1.0.1"
   resolved "http://nexus.jcbel.com/repository/npm/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
+has-ansi@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/has-ansi/-/has-ansi-2.0.0.tgz#34f5049ce1ecdf2b0649af3ef24e45ed35416d91"
+  dependencies:
+    ansi-regex "^2.0.0"
+
 humanize-ms@^1.2.0:
   version "1.2.0"
   resolved "http://nexus.jcbel.com/repository/npm/humanize-ms/-/humanize-ms-1.2.0.tgz#4d691a1fa1b87989789af8e58cddfd550622e4d4"
@@ -243,6 +271,12 @@ humanize-ms@^1.2.0:
 iconv-lite@^0.4.15:
   version "0.4.17"
   resolved "http://nexus.jcbel.com/repository/npm/iconv-lite/-/iconv-lite-0.4.17.tgz#4fdaa3b38acbc2c031b045d0edcdfe1ecab18c8d"
+
+invariant@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.npmjs.org/invariant/-/invariant-2.2.2.tgz#9e1f56ac0acdb6bf303306f338be3b204ae60360"
+  dependencies:
+    loose-envify "^1.0.0"
 
 is-buffer@^1.1.5:
   version "1.1.5"
@@ -312,6 +346,10 @@ isstream@~0.1.2:
   version "0.1.2"
   resolved "http://nexus.jcbel.com/repository/npm/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
 
+js-tokens@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.npmjs.org/js-tokens/-/js-tokens-3.0.1.tgz#08e9f132484a2c45a30907e9dc4d5567b7f114d7"
+
 kind-of@^3.0.2:
   version "3.2.0"
   resolved "http://nexus.jcbel.com/repository/npm/kind-of/-/kind-of-3.2.0.tgz#b58abe4d5c044ad33726a8c1525b48cf891bff07"
@@ -327,6 +365,12 @@ klaw@^1.3.1:
 lodash@^4.0.0:
   version "4.17.4"
   resolved "http://nexus.jcbel.com/repository/npm/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
+
+loose-envify@^1.0.0:
+  version "1.3.1"
+  resolved "https://registry.npmjs.org/loose-envify/-/loose-envify-1.3.1.tgz#d1a8ad33fa9ce0e713d65fdd0ac8b748d478c848"
+  dependencies:
+    js-tokens "^3.0.0"
 
 magic-string@^0.19.0:
   version "0.19.1"
@@ -522,6 +566,16 @@ source-map@^0.5.6:
 statuses@^1.3.1:
   version "1.3.1"
   resolved "http://nexus.jcbel.com/repository/npm/statuses/-/statuses-1.3.1.tgz#faf51b9eb74aaef3b3acf4ad5f61abf24cb7b93e"
+
+strip-ansi@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.npmjs.org/strip-ansi/-/strip-ansi-3.0.1.tgz#6a385fb8853d952d5ff05d0e8aaf94278dc63dcf"
+  dependencies:
+    ansi-regex "^2.0.0"
+
+supports-color@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/supports-color/-/supports-color-2.0.0.tgz#535d045ce6b6363fa40117084629995e9df324c7"
 
 urllib@^2.17.1:
   version "2.22.0"

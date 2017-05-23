@@ -18,5 +18,8 @@ export default {
     'ali-oss',
     'klaw',
     'commander',
+    'invariant',
+    'chalk',
+    'fs',
   ],
 };

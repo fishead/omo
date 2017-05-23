@@ -4,110 +4,88 @@ import oss from 'ali-oss';
 import { version } from '../package.json';
 import klaw from 'klaw';
 import program from 'commander';
+import invariant from 'invariant';
+import chalk from 'chalk';
+import fs from 'fs';
+
+
+const error = chalk.red;
 
 
 program.version(version);
-program.usage('[command] [flags]');
+program.usage('<cmd> [flags]');
 program.option('--verbose', 'show verbose infomation');
 program.option('--region <region>', 'region, valid regions: oss-cn-hangzhou');
-program.option('--bucket <bucket>', 'OSS bucket');
-program.option('--access-key-id <access-key-id>', 'access key id');
-program.option('--access-key-secret <access-key-secret>', 'access key secret');
+program.option('--access-key-id <access-key-id>', 'access key id, defaults to [ALIYUN_OSS_ACCESSKEY_ID]');
+program.option('--access-key-secret <access-key-secret>', 'access key secret, defaults to [ALIYUN_OSS_ACCESSKEY_SECRET]');
 
 
 program
-  .command('create <resource>')
-  .description('create resource on OSS')
-  .option('--file <filepath>', 'File to upload')
-  .option('--dir <dirpath>', 'Dir to upload')
-  .option('--key-prefix <key-prefix>', 'object key(or file path) prefix')
-  .action(async function createResource(resource = '', options) {
+  .command('object <action> [file-or-dir]')
+  .description('manage Object on OSS')
+  .option('--bucket <bucket>', 'bucket to store file')
+  .option('--prefix <prefix>', 'object key(or file path) prefix')
+  .action(async function createResource(action, fileOrDir, options) {
     if (!program.accessKeyId && !process.env.ALIYUN_OSS_ACCESSKEY_ID) {
-      return console.error('access key id is required');
+      return console.log(error('access key id is required'));
     }
 
     if (!program.accessKeySecret && !process.env.ALIYUN_OSS_ACCESSKEY_SECRET) {
-      console.error('access key secret is required');
+      console.log(error('access key secret is required'));
     }
 
     if (!program.region) {
-      return console.error('region is required');
+      return console.log(error('region is required'));
     }
 
-    if (!program.bucket) {
-      return console.error('bucket is required');
+    if (!options.bucket) {
+      return console.log(error('bucket name is required'));
     }
 
 
     const store = oss({
       accessKeyId: program.accessKeyId || process.env.ALIYUN_OSS_ACCESSKEY_ID,
       accessKeySecret: program.accessKeySecret || process.env.ALIYUN_OSS_ACCESSKEY_SECRET,
-      bucket: program.bucket,
       region: program.region,
+      bucket: options.bucket,
     });
 
 
     const pwd = process.cwd();
-    const prefix = formatKeyPrefix(options.keyPrefix || '');
+    const prefix = formatPrefix(options.prefix || '');
 
 
-    if (resource.toLowerCase() === 'object') {
+    const _action = normalizeAction(action);
+
+
+    if (_action === 'create') {
       let files = [];
-      if (options.file) {
-        files.push(fullPath(options.file));
-      } else if (options.dir) {
-        files = await getFilesInDir(fullPath(options.dir));
+      let fileRoot;
+
+
+      const stats = await fileStats(fileOrDir);
+
+
+      if (stats.isFile()) {
+        const fullFilePath = fullPath(fileOrDir);
+        fileRoot = path.dirname(fullFilePath);
+        files.push(fullFilePath);
+      } else if (stats.isDirectory()) {
+        fileRoot = fullPath(fileOrDir);
+        files = await getFilesInDir(fileRoot);
       } else {
-        console.error('specify file or dir to upload');
+        console.log(error('specify file or dir to upload'));
       }
 
 
       files.forEach(async filepath => {
-        const fileKey = path.join(prefix, filepath.replace(pwd, ''));
+        const fileKey = path.join(prefix, filepath.replace(fileRoot, ''));
         console.log(`upload ${filepath} to ${fileKey}`);
         const a = await co.wrap(function *() {
           return yield store.put(fileKey, filepath);
         })();
       });
-    } else {
-      console.error('invalid resource type, valid resource types are: bucket, object');
-    }
-  });
-
-
-program.command('list [resource]')
-  .description('list resources on OSS')
-  .option('--key-prefix <key-prefix>', 'object key(or file path) prefix')
-  .action(async (resource, options) => {
-    if (!program.accessKeyId && !process.env.ALIYUN_OSS_ACCESSKEY_ID) {
-      return console.error('access key id is required');
-    }
-
-    if (!program.accessKeySecret && !process.env.ALIYUN_OSS_ACCESSKEY_SECRET) {
-      console.error('access key secret is required');
-    }
-
-    if (!program.region) {
-      return console.error('region is required');
-    }
-
-    if (!program.bucket) {
-      return console.error('bucket is required');
-    }
-
-
-    const store = oss({
-      accessKeyId: program.accessKeyId || process.env.ALIYUN_OSS_ACCESSKEY_ID,
-      accessKeySecret: program.accessKeySecret || process.env.ALIYUN_OSS_ACCESSKEY_SECRET,
-      bucket: program.bucket,
-      region: program.region,
-    });
-
-
-    const prefix = formatKeyPrefix(options.keyPrefix || '');
-
-
-    if (resource.toLowerCase() === 'object') {
+    } else if (_action === 'list') {
       const res = await co.wrap(function *() {
         return yield store.list({
           prefix,
@@ -125,43 +103,7 @@ program.command('list [resource]')
       res.objects.forEach(object => {
         console.log(`${object.size}\t${object.lastModified}\t${object.name}\t`);
       });
-    }
-  });
-
-
-program.command('remove [resource]')
-  .description('remove resource from OSS')
-  .option('--key-prefix <key-prefix>', 'object key(or file path) prefix')
-  .action(async (resource, options) => {
-    if (resource.toLowerCase() === 'object') {
-      if (!program.accessKeyId && !process.env.ALIYUN_OSS_ACCESSKEY_ID) {
-        return console.error('access key id is required');
-      }
-
-      if (!program.accessKeySecret && !process.env.ALIYUN_OSS_ACCESSKEY_SECRET) {
-        console.error('access key secret is required');
-      }
-
-      if (!program.region) {
-        return console.error('region is required');
-      }
-
-      if (!program.bucket) {
-        return console.error('bucket is required');
-      }
-
-
-      const store = oss({
-        accessKeyId: program.accessKeyId || process.env.ALIYUN_OSS_ACCESSKEY_ID,
-        accessKeySecret: program.accessKeySecret || process.env.ALIYUN_OSS_ACCESSKEY_SECRET,
-        bucket: program.bucket,
-        region: program.region,
-      });
-
-
-      const prefix = formatKeyPrefix(options.keyPrefix || '');
-
-
+    } else if (_action === 'remove') {
       const res = await co.wrap(function *() {
         return yield store.list({
           prefix,
@@ -176,7 +118,9 @@ program.command('remove [resource]')
       }
 
 
-      console.log('clear');
+      console.log(chalk.green('clear'));
+    } else {
+      console.log(error('invalid resource type, valid resource types are: bucket, object'));
     }
   });
 
@@ -222,6 +166,25 @@ function appendSlash(str) {
 }
 
 
-function formatKeyPrefix(prefix) {
+function formatPrefix(prefix) {
   return trimLeadingSlash(appendSlash(prefix));
+}
+
+
+function normalizeAction(action = '') {
+  return action.toLowerCase();
+}
+
+
+function fileStats(filePath) {
+  return new Promise((resolve, reject) => {
+    fs.stat(filePath, (err, stats) => {
+      if (err) {
+        return reject(err);
+      }
+
+
+      resolve(stats);
+    });
+  });
 }

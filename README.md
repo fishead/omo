@@ -14,22 +14,49 @@ omo --help
 ```
 
 
-## Create resource
-### Object
+## Manage Bucket
 ```shell
-omo create object ...
+omo bucket <action> [flags ...]
 ```
 
 
-## List resources
-### Object
+### Create bucket
 ```shell
-omo list object ...
+omo bucket create your-bucket-name
 ```
 
 
-## Remove resources
-### Object
+### Remove bucket
 ```shell
-omo remove object
+omo bucket remove your-bucket-name
+```
+
+
+### List files in bucket
+```shell
+omo bucket list your-bucket-name
+```
+
+
+## Manage Object
+```shell
+omo object <action> <resource> [flags ...]
+```
+
+
+### Create (or Upload) file (or dir) to OSS
+```shell
+omo bucket create <file-or-dir>
+```
+
+
+### Remove (or Upload) file (or dir) to OSS
+```shell
+omo bucket remove <object-key>
+```
+
+
+## Manage Meta
+```shell
+omo meta <action> [flags ...]
 ```
