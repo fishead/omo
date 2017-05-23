@@ -4,7 +4,6 @@ import oss from 'ali-oss';
 import { version } from '../package.json';
 import klaw from 'klaw';
 import program from 'commander';
-import invariant from 'invariant';
 import chalk from 'chalk';
 import fs from 'fs';
 
